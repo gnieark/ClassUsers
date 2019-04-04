@@ -7,7 +7,7 @@ class User_Manager
     private static $table_groups = 'groups';
 
 
-    const CREATE_TABLE_USERS_QUERY = "
+    const QUERY_CREATE_TABLE_USERS = "
         CREATE TABLE %table_users% (
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `login` varchar(16) NOT NULL,
@@ -27,7 +27,7 @@ class User_Manager
         VALUES (0,'','SYSTEM','none',0, NOW(),0);
         ";
 
-    const CREATE_TABLE_GROUPS = "
+    const QUERY_CREATE_TABLE_GROUPS = "
         CREATE TABLE %table_groups% ( 
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `name` text NOT NULL,
@@ -37,6 +37,18 @@ class User_Manager
             `updated_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
             `updated_by` int(11) NOT NULL,
             PRIMARY KEY (`id`)
+        );
+    ";
+
+    const QUERY_CREATE_REL_USERS_GROUPS = "  
+        CREATE TABLE `%table_users%_%table_groups%_rel` (
+            `user_id` int(11) NOT NULL,
+            `group_id` int(11) NOT NULL,
+            PRIMARY KEY (`user_id`,`group_id`),
+            KEY `users_id` (`user_id`),
+            KEY `group_id` (`group_id`),
+            CONSTRAINT `%table_users%_%table_groups%_rel_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `%table_users%` (`id`),
+            CONSTRAINT `%table_users%_%table_groups%_rel_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `%table_groups%` (`id`)
         );
     ";
 
