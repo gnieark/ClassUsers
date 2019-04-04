@@ -23,9 +23,11 @@ class User_Manager
             `updated_by` int(11) NOT NULL,
             PRIMARY KEY (`id`)
         );
-        INSERT INTO TABLE %table_users% (id,login,display_name,auth_method,active,created_time,created_by)
-        VALUES (0,'','SYSTEM','none',0, NOW(),0);
+        
         ";
+    const QUERY_CREATE_SYSTEM_USER = "INSERT INTO TABLE %table_users% 
+                                    (id,login,display_name,auth_method,active,created_time,created_by)
+                                    VALUES (0,'','SYSTEM','none',0, NOW(),0);";
 
     const QUERY_CREATE_TABLE_GROUPS = "
         CREATE TABLE %table_groups% ( 
@@ -53,6 +55,26 @@ class User_Manager
     ";
 
     
+    
+    private function create_local_tables(PDO $db)
+    {
+        $searched = array('%table_users%','%table_groups%');
+        $replace = array(self::table_users,self::table_groups);
+
+        $queries = array(
+            str_replace($searched,$replace,self::QUERY_CREATE_TABLE_USERS),
+            str_replace($searched,$replace,self::QUERY_CREATE_SYSTEM_USER),
+            str_replace($searched,$replace,self::QUERY_CREATE_TABLE_GROUPS),
+            str_replace($searched,$replace,self::QUERY_CREATE_REL_USERS_GROUPS),
+        );
+        foreach($queries as $query)
+        {
+            $rs = $db->query($query);
+            if($rs === false){
+                throw new \UnexpectedValueException("SQL ERROR ON QUERY " . $query );
+            }
+        }
+    }
 
     public function authentificate($db,$login, $password){
         $user = new User_Sql($db);
