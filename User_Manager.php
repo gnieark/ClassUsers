@@ -25,7 +25,7 @@ class User_Manager
         );
         
         ";
-    const QUERY_CREATE_SYSTEM_USER = "INSERT INTO TABLE %table_users% 
+    const QUERY_CREATE_SYSTEM_USER = "INSERT INTO  %table_users% 
                                     (id,login,display_name,auth_method,active,created_time,created_by)
                                     VALUES (0,'','SYSTEM','none',0, NOW(),0);";
 
@@ -56,10 +56,10 @@ class User_Manager
 
     
     
-    private function create_local_tables(PDO $db)
+    public static function create_local_tables(PDO $db)
     {
         $searched = array('%table_users%','%table_groups%');
-        $replace = array(self::table_users,self::table_groups);
+        $replace = array(self::$table_users,self::$table_groups);
 
         $queries = array(
             str_replace($searched,$replace,self::QUERY_CREATE_TABLE_USERS),

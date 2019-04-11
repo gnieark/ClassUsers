@@ -11,6 +11,8 @@ class User
 
     protected $db;
 
+  
+
     public function get_id()
     {
         if($this->is_connected){
@@ -35,7 +37,11 @@ class User
         return $this->groups;
     }
     
-    public function __construct($db){
+    public function set_db(PDO $db){
+        $this->$db = $db;
+    }
+
+    public function __construct(PDO $db){
         $this->db = $db;
     }
    
