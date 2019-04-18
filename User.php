@@ -11,8 +11,6 @@ class User
 
     protected $db;
 
-  
-
     public function get_id()
     {
         if($this->is_connected){

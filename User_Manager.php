@@ -6,6 +6,8 @@ class User_Manager
     private static $table_users = 'users';
     private static $table_groups = 'groups';
 
+    //could append 'ldap', 'cas':
+    private static $available_auth_methods = array('local'); 
 
     const QUERY_CREATE_TABLE_USERS = "
         CREATE TABLE %table_users% (
@@ -55,7 +57,15 @@ class User_Manager
     ";
 
     
-    
+    /*
+    * Erase the list of avaliable methods
+    * @ input methods: Array (non associative)
+    * return true
+    */
+    public static function set_available_auth_methods($methods)
+    {
+        self::$available_auth_methods = $methods;
+    }
     public static function create_local_tables(PDO $db)
     {
         $searched = array('%table_users%','%table_groups%');
@@ -76,12 +86,27 @@ class User_Manager
         }
     }
 
+
     public function authentificate($db,$login, $password){
-        $user = new User_Sql($db);
-        if($user->authentificate($login,$password)){
-            return $user;
+
+        foreach(self::$available_auth_methods as $method){
+
+            switch($method)
+            {
+                case "local":
+                case "sql'":
+                    $user = new User_Sql($db);
+                    if($user->authentificate($login,$password)){
+                        return $user;
+                    }
+                    break;
+                default:
+                    return false;
+            }
         }
 
-        return false;
+        $user = new User();
+
+        return $user;
     }
 }
