@@ -105,7 +105,7 @@ class User_Manager
             }
         }
 
-        $user = new User();
+        $user = new User($db);
 
         return $user;
     }

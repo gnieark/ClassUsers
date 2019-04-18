@@ -11,6 +11,10 @@ class User
 
     protected $db;
 
+    public function __sleep(){
+        return array('is_connected','external_id','id','display_name','auth_method','groups');
+    }
+   
     public function get_id()
     {
         if($this->is_connected){
@@ -36,14 +40,12 @@ class User
     }
     
     public function set_db(PDO $db){
-        $this->$db = $db;
+        
+        $this->db = $db;
     }
 
     public function __construct(PDO $db){
         $this->db = $db;
     }
    
-
- 
-
 }
